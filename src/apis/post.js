@@ -3,7 +3,7 @@ import myaxios from '@/utils/request'
 export const getPostList = (params) => {
     return myaxios(({
         method: 'get',
-        url: '/post',
+        url: '/post_search',
         params
     }))
 }

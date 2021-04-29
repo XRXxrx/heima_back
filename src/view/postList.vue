@@ -67,6 +67,7 @@ export default {
     //封装获取文章列表请求
     async init() {
       let res = await getPostList({
+        keyword: "",
         pageIndex: this.pageIndex,
         pageSize: this.pageSize,
       });
