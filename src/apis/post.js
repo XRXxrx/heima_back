@@ -1,8 +1,9 @@
 import myaxios from '@/utils/request'
 
-export const getPostList = () => {
+export const getPostList = (params) => {
     return myaxios(({
         method: 'get',
-        url: '/post'
+        url: '/post',
+        params
     }))
 }

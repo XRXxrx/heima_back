@@ -35,6 +35,17 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="pageIndex"
+        :page-sizes="[2, 4, 6, 8]"
+        :page-size="6"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="25"
+        style="margin-top: 20px; margin-left: 50%; transform: translateX(-50%)"
+      >
+      </el-pagination>
     </el-card>
   </div>
 </template>
@@ -45,19 +56,44 @@ export default {
   data() {
     return {
       postList: [],
+      pageIndex: 1,
+      pageSize: 6,
     };
   },
   async mounted() {
-    let res = await getPostList();
-    console.log(res);
-    this.postList = res.data.data;
+    this.init();
   },
   methods: {
+    //封装获取文章列表请求
+    async init() {
+      let res = await getPostList({
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+      });
+      console.log(res);
+      this.postList = res.data.data;
+    },
     handleEdit(index, row) {
       console.log(index, row);
     },
     handleDelete(index, row) {
       console.log(index, row);
+    },
+    // 切换每页显示数量列表时触发
+    handleSizeChange(val) {
+      //   console.log(`每页 ${val} 条`);
+      // val就是当前用户所选择的数量
+      // 我们需要做：
+      // 1.重置pageSize
+      this.pageSize = val;
+      // 2.根据重置后的pageSize再次发起数据请求，动态渲染
+      this.init();
+    },
+    // 切换页码时触发
+    handleCurrentChange(val) {
+      //   console.log(`当前页: ${val}`);
+      this.pageIndex = val;
+      this.init();
     },
   },
 };
