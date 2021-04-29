@@ -21,12 +21,15 @@
           ></el-input>
         </el-form-item>
       </el-form>
-      <el-button type="primary" round class="login-btn">主要按钮</el-button>
+      <el-button type="primary" round class="login-btn" @click="login"
+        >登录</el-button
+      >
     </div>
   </div>
 </template>
 
 <script>
+import { userLogin } from "@/apis/user";
 export default {
   data() {
     return {
@@ -57,6 +60,22 @@ export default {
         ],
       },
     };
+  },
+  methods: {
+    async login() {
+      let res = await userLogin(this.loginForm);
+      console.log(res);
+      if (res.data.message === "登录成功") {
+        this.$message.success("登录成功");
+        //成功跳转到后台管理页面
+        this.$router.push({ name: "index" });
+      } else {
+        this.$message({
+          message: "登录失败，账号或者密码错误",
+          type: "error",
+        });
+      }
+    },
   },
 };
 </script>
