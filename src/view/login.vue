@@ -62,19 +62,31 @@ export default {
     };
   },
   methods: {
-    async login() {
-      let res = await userLogin(this.loginForm);
-      console.log(res);
-      if (res.data.message === "登录成功") {
-        this.$message.success("登录成功");
-        //成功跳转到后台管理页面
-        this.$router.push({ name: "index" });
-      } else {
-        this.$message({
-          message: "登录失败，账号或者密码错误",
-          type: "error",
-        });
-      }
+    login() {
+      // 我们在真正进行提交之前，应该根据用户的验证规则进行数据校验，如果校验通过才发起请求，否则中止本次请求并给出提示
+      // 表单有一个validate方法可以实现用户用户的校验，它要传入一个函数做为参数，当校验完成的时候，会将校验的结果以参数的形式传递给这个回调函数
+      // valid如果为true说明校验通过，否则为不通过
+      this.$refs.ruleForm.validate(async (valid) => {
+        //通过校验
+        if (valid) {
+          let res = await userLogin(this.loginForm);
+          console.log(res);
+          if (res.data.message === "登录成功") {
+            this.$message.success("登录成功");
+            //保存本地令牌
+            localStorage.setItem("heima_back_token", res.data.data.token);
+            //成功跳转到后台管理页面
+            this.$router.push({ name: "index" });
+          } else {
+            this.$message({
+              message: "登录失败，账号或者密码错误",
+              type: "error",
+            });
+          }
+        } else {
+          this.$message.error("请输入合法的账号密码");
+        }
+      });
     },
   },
 };
