@@ -2,7 +2,7 @@
   <div class="index">
     <el-container>
       <el-aside width="200px">
-        <div class="logo"></div>
+        <div class="logo" @click="$router.push({ name: 'hello' })"></div>
         <el-menu
           default-active="2"
           class="el-menu-vertical-demo"
@@ -34,11 +34,11 @@
               <span>文章管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="2-1">
-                <i class="el-icon-s-check"></i>
+              <el-menu-item index="postList">
+                <i class="el-icon-s-order"></i>
                 <span>文章列表</span>
               </el-menu-item>
-              <el-menu-item index="2-2">
+              <el-menu-item index="postPublish">
                 <i class="el-icon-circle-plus"></i>
                 <span>文章添加</span>
               </el-menu-item>
@@ -51,7 +51,7 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="3-1">
-                <i class="el-icon-s-check"></i>
+                <i class="el-icon-s-claim"></i>
                 <span>栏目列表</span>
               </el-menu-item>
               <el-menu-item index="3-2">
@@ -71,7 +71,9 @@
             <span> 退出</span>
           </div>
         </el-header>
-        <el-main>Main</el-main>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -102,7 +104,7 @@ export default {};
   }
   .logo {
     height: 60px;
-    background: url(../assets/logo.png);
+    background: url("../assets/logo.png");
     background-size: cover;
     background-color: #fff;
   }
