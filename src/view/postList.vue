@@ -9,17 +9,18 @@
     <!-- 卡片视图 -->
     <el-card class="box-card" style="margin-top: 20px">
       <!-- 表格 -->
-      <el-table :data="postList" border style="width: 100%; text-align: center">
+      <el-table :data="postList" border style="width: 100%">
         <el-table-column type="index" width="50"> </el-table-column>
-        <el-table-column prop="title" label="标题" width="180">
+        <el-table-column prop="title" label="标题" width="680">
         </el-table-column>
-        <el-table-column label="类型" width="180">
+        <el-table-column label="类型" width="80">
           <!-- 凡是在表格中要获取该行对应的数据进行操作，就要用自定义模板 -->
           <template slot-scope="scope">
             {{ scope.row.type === 1 ? "文章" : "视频" }}
           </template>
         </el-table-column>
-        <el-table-column prop="user.nickname" label="作者"> </el-table-column>
+        <el-table-column prop="user.nickname" label="作者" width="200">
+        </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -63,4 +64,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.postList {
+  /deep/.el-table th > .cell {
+    text-align: center;
+  }
+
+  /deep/.el-table .cell {
+    text-align: center;
+  }
+}
 </style>
