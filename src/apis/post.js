@@ -15,3 +15,12 @@ export const getCategary = () => {
         url: '/category'
     })
 }
+
+//发布文章
+export const postCatagory = (data) => {
+    return myaxios({
+        method: 'post',
+        url: '/post',
+        data
+    })
+}

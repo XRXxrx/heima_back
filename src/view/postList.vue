@@ -42,7 +42,7 @@
         :page-sizes="[2, 4, 6, 8]"
         :page-size="6"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="25"
+        :total="300"
         style="margin-top: 20px; margin-left: 50%; transform: translateX(-50%)"
       >
       </el-pagination>

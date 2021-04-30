@@ -10,7 +10,7 @@
     <el-card class="box-card" style="margin-top: 20px">
       <el-form ref="form" :model="post" label-width="80px">
         <el-form-item label="标题">
-          <el-input v-model="post.title"></el-input>
+          <el-input v-model="post.title" placeholder="请输入标题"></el-input>
         </el-form-item>
         <el-form-item label="类型">
           <el-radio-group v-model="post.type">
@@ -51,6 +51,20 @@
             >
           </el-checkbox-group>
         </el-form-item>
+        <el-form-item label="封面">
+          <el-upload
+            :action="axios.defaults.baseURL + '/upload'"
+            :headers="getToken()"
+            list-type="picture-card"
+            :on-success="coverSuccess"
+            :on-remove="coverRemove"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+          <el-dialog :visible.sync="dialogVisible">
+            <img width="100%" :src="dialogImageUrl" alt="" />
+          </el-dialog>
+        </el-form-item>
         <el-button type="primary" @click="publishPost">发布</el-button>
       </el-form>
     </el-card>
@@ -58,7 +72,7 @@
 </template>
 
 <script>
-import { getCategary } from "@/apis/post";
+import { getCategary, postCatagory } from "@/apis/post";
 import axios from "@/utils/request";
 import VueEditor from "vue-word-editor";
 import "quill/dist/quill.snow.css";
@@ -76,6 +90,8 @@ export default {
         cover: [],
         type: 1,
       },
+      dialogImageUrl: "",
+      dialogVisible: false,
       cateList: [], //栏目数据
       checkedCcates: [], // 当前用户所选择的复选框选项值的集合：id集合
       checkAll: false, //全选按钮状态
@@ -121,6 +137,21 @@ export default {
     }
   },
   methods: {
+    //封面上传
+    coverSuccess(response, file, fileList) {
+      // console.log(response);
+      // 我们要将当前文件存储在服务器中的id添加到cover数组中，并且要注意，它需要存储的是id,且是对象形式
+      this.post.cover.push({ id: response.data.id });
+    },
+    //移除封面,关键是要移除在数据中的存储
+    coverRemove(file, fileList) {
+      console.log(file, fileList);
+      // 获取当前被删除的图片的id
+      let id = file.response.data.id;
+      this.post.cover = this.post.cover.filter((v) => {
+        return v.id !== id;
+      });
+    },
     //栏目复选框
     handleCheckAllChange(val) {
       // this.checkedCities = val ? cityOptions : [];
@@ -155,7 +186,7 @@ export default {
       return { Authorization: localStorage.getItem("heima_back_token") };
     },
     //点击发布
-    publishPost() {
+    async publishPost() {
       // console.log(this.checkedCcates);
       // console.log(publishPost);
       if (this.post.type === 1) {
@@ -166,7 +197,13 @@ export default {
       this.post.categories = this.checkedCcates.map((v) => {
         return { id: v };
       });
-      console.log(this.post);
+      // console.log(this.post);
+      let res = await postCatagory(this.post);
+      console.log(res);
+      if (res.data.message === "文章发布成功") {
+        this.$message.success(res.data.message);
+        this.$router.push({ name: "postList" });
+      }
     },
   },
 };
