@@ -40,8 +40,8 @@
           >
           <div style="margin: 15px 0"></div>
           <el-checkbox-group
-            v-model="checkedCities"
-            @change="handleCheckedCitiesChange"
+            v-model="checkedCcates"
+            @change="handleCheckedCatesChange"
           >
             <el-checkbox
               v-for="value in cateList"
@@ -76,10 +76,10 @@ export default {
         cover: [],
         type: 1,
       },
-      cateList: [],
-      checkAll: false,
-      checkedCities: [],
-      isIndeterminate: true,
+      cateList: [], //栏目数据
+      checkedCcates: [], // 当前用户所选择的复选框选项值的集合：id集合
+      checkAll: false, //全选按钮状态
+      isIndeterminate: true, //不确定是否全部选中
       config: {
         // 上传图片的配置
         uploadImage: {
@@ -121,15 +121,29 @@ export default {
     }
   },
   methods: {
+    //栏目复选框
     handleCheckAllChange(val) {
       // this.checkedCities = val ? cityOptions : [];
       // this.isIndeterminate = false;
+      // console.log(val);
+      this.checkedCcates = val
+        ? this.cateList.map((v) => {
+            return v.id;
+          })
+        : [];
+      this.isIndeterminate = false;
     },
-    handleCheckedCitiesChange(value) {
+    handleCheckedCatesChange(value) {
       // let checkedCount = value.length;
       // this.checkAll = checkedCount === this.cities.length;
       // this.isIndeterminate =
       //   checkedCount > 0 && checkedCount < this.cities.length;
+      // value:就是当前用户所选中的所有复选框所对应的id数组
+      // console.log(value);
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.cateList.length;
+      this.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.cateList.length;
     },
     //上传视频成功的回调
     videoSuccess(response, file, fileList) {
@@ -142,11 +156,16 @@ export default {
     },
     //点击发布
     publishPost() {
+      // console.log(this.checkedCcates);
       // console.log(publishPost);
       if (this.post.type === 1) {
         // 获取富文本框的内容
         this.post.content = this.$refs.myedit.editor.root.innerHTML;
       }
+      // 栏目数据进行改造，改造为对象的形式 [1,2,3] >> [{id:1},{id:2},{id:3}]
+      this.post.categories = this.checkedCcates.map((v) => {
+        return { id: v };
+      });
       console.log(this.post);
     },
   },
