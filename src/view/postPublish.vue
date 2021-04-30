@@ -31,6 +31,26 @@
             <div slot="tip" class="el-upload__tip">只能上传视频文件</div>
           </el-upload>
         </el-form-item>
+        <el-form-item label="栏目">
+          <el-checkbox
+            :indeterminate="isIndeterminate"
+            v-model="checkAll"
+            @change="handleCheckAllChange"
+            >全选</el-checkbox
+          >
+          <div style="margin: 15px 0"></div>
+          <el-checkbox-group
+            v-model="checkedCities"
+            @change="handleCheckedCitiesChange"
+          >
+            <el-checkbox
+              v-for="value in cateList"
+              :label="value.id"
+              :key="value.id"
+              >{{ value.name }}</el-checkbox
+            >
+          </el-checkbox-group>
+        </el-form-item>
         <el-button type="primary" @click="publishPost">发布</el-button>
       </el-form>
     </el-card>
@@ -38,6 +58,7 @@
 </template>
 
 <script>
+import { getCategary } from "@/apis/post";
 import axios from "@/utils/request";
 import VueEditor from "vue-word-editor";
 import "quill/dist/quill.snow.css";
@@ -55,6 +76,10 @@ export default {
         cover: [],
         type: 1,
       },
+      cateList: [],
+      checkAll: false,
+      checkedCities: [],
+      isIndeterminate: true,
       config: {
         // 上传图片的配置
         uploadImage: {
@@ -85,7 +110,27 @@ export default {
       },
     };
   },
+  async mounted() {
+    let res = await getCategary();
+    console.log(res);
+    this.cateList = res.data.data;
+    if (localStorage.getItem("heima_back_token")) {
+      this.cateList.splice(0, 2);
+    } else {
+      this.cateList.splice(0, 1);
+    }
+  },
   methods: {
+    handleCheckAllChange(val) {
+      // this.checkedCities = val ? cityOptions : [];
+      // this.isIndeterminate = false;
+    },
+    handleCheckedCitiesChange(value) {
+      // let checkedCount = value.length;
+      // this.checkAll = checkedCount === this.cities.length;
+      // this.isIndeterminate =
+      //   checkedCount > 0 && checkedCount < this.cities.length;
+    },
     //上传视频成功的回调
     videoSuccess(response, file, fileList) {
       // console.log(response, file, fileList);
