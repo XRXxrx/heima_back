@@ -4,7 +4,7 @@
       <el-aside width="200px">
         <div class="logo" @click="$router.push({ name: 'hello' })"></div>
         <el-menu
-          default-active="$router.name"
+          :default-active="$route.name"
           class="el-menu-vertical-demo"
           background-color="#545c64"
           text-color="#fff"

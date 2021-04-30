@@ -22,14 +22,9 @@
           <VueEditor :config="config" v-if="post.type === 1" ref="myedit" />
           <el-upload
             class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="3"
-            :on-exceed="handleExceed"
-            :file-list="fileList"
+            :action="axios.defaults.baseURL + '/upload'"
+            :headers="getToken()"
+            :on-success="videoSuccess"
             v-else
           >
             <el-button size="small" type="primary">点击上传</el-button>
@@ -52,6 +47,7 @@ export default {
   },
   data() {
     return {
+      axios,
       post: {
         title: "",
         content: "",
@@ -90,6 +86,11 @@ export default {
     };
   },
   methods: {
+    //上传视频成功的回调
+    videoSuccess(response, file, fileList) {
+      // console.log(response, file, fileList);
+      this.post.content = axios.defaults.baseURL + response.data.url;
+    },
     // 封装设置token的方法
     getToken() {
       return { Authorization: localStorage.getItem("heima_back_token") };
