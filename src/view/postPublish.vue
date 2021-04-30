@@ -19,7 +19,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="内容">
-          <VueEditor :config="config" v-if="post.type === 1" />
+          <VueEditor :config="config" v-if="post.type === 1" ref="myedit" />
           <el-upload
             class="upload-demo"
             action="https://jsonplaceholder.typicode.com/posts/"
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import axios from "@/utils/request";
 import VueEditor from "vue-word-editor";
 import "quill/dist/quill.snow.css";
 export default {
@@ -61,28 +62,46 @@ export default {
       config: {
         // 上传图片的配置
         uploadImage: {
-          url: "http://localhost:3000/upload",
+          // 指定处理文件上传的服务器的接口址
+          url: axios.defaults.baseURL + "/upload",
+          // 后台所需要的参数的名称
           name: "file",
+          //   传递token
+          headers: this.getToken(),
           // res是结果，insert方法会把内容注入到编辑器中，res.data.url是资源地址
           uploadSuccess(res, insert) {
-            insert("http://localhost:3000" + res.data.url);
+            console.log(res);
+            insert(axios.defaults.baseURL + res.data.data.url);
           },
         },
 
         // 上传视频的配置
         uploadVideo: {
-          url: "http://localhost:3000/upload",
+          url: axios.defaults.baseURL + "/upload",
           name: "file",
+          //   传递token
+          headers: this.getToken(),
           uploadSuccess(res, insert) {
-            insert("http://localhost:3000" + res.data.url);
+            console.log(res);
+            insert(axios.defaults.baseURL + res.data.data.url);
           },
         },
       },
     };
   },
   methods: {
+    // 封装设置token的方法
+    getToken() {
+      return { Authorization: localStorage.getItem("heima_back_token") };
+    },
+    //点击发布
     publishPost() {
-      console.log(publishPost);
+      // console.log(publishPost);
+      if (this.post.type === 1) {
+        // 获取富文本框的内容
+        this.post.content = this.$refs.myedit.editor.root.innerHTML;
+      }
+      console.log(this.post);
     },
   },
 };
