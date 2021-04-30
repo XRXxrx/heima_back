@@ -58,6 +58,7 @@
             list-type="picture-card"
             :on-success="coverSuccess"
             :on-remove="coverRemove"
+            limit="3"
           >
             <i class="el-icon-plus"></i>
           </el-upload>
